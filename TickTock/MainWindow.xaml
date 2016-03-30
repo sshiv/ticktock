@@ -1,0 +1,78 @@
+﻿<Window x:Class="TickTock.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        DataContext="{Binding RelativeSource={RelativeSource self}}"
+        Title="MainWindow" Height="360" Width="540"
+        WindowStyle="None" ResizeMode="NoResize" Background="Transparent" Topmost="True">
+    <Window.Resources>
+        <Style x:Key="BorderlessButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="Gray" />
+            <!--
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransform" >
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.1" ScaleY="1.1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            -->
+        </Style>
+    </Window.Resources>
+    <Border Background="White" CornerRadius="10,10,10,10" Padding="6">
+        <Grid>
+            <StackPanel x:Name="MainPanel" Orientation="Vertical" MouseDown="StackPanel_MouseDown">
+                <Button x:Name="CloseButton" Height="20" Width="20" Style="{StaticResource BorderlessButton}"
+                            HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalAlignment="Center" VerticalContentAlignment="Top"
+                            Click="CloseButton_Click">x</Button>
+                <TextBox Height="40" x:Name="TaskTextBox" Margin="70,10,70,10" IsEnabled="True" Text="{Binding CurrentTaskName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                    Visibility="Collapsed" LostKeyboardFocus="TaskTextBox_LostKeyboardFocus"  PreviewKeyDown="TaskTextBox_PreviewKeyDown"
+                             AcceptsReturn="False" FontSize="30"/>
+                <TextBlock Height="40" x:Name="TaskTextBlock" Margin="70,10,70,10" IsEnabled="True" Text="{Binding ElementName=TaskTextBox, Path=Text}"
+                       MouseDown="TaskTextBlock_MouseDown" FontSize="30"/>
+                <TextBlock Width="500" Height="180" x:Name="CountdownTextBox" Margin="50,10,50,10" FontSize="150" Padding="0"
+                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       TextAlignment="Center"
+                       Typography.NumeralStyle="Lining"
+                       >000:00</TextBlock>
+                <UniformGrid HorizontalAlignment="Center" Width="250" Height="50" Margin="5" Rows="1" Columns="4">
+                    <Button x:Name="SubtractTimeButton" HorizontalAlignment="Center" Width="50" 
+                                FontSize="30" 
+                                Background="Transparent" BorderBrush="Gray"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Content="-" Click="SubtractTimeButton_Click">
+
+                    </Button>
+                    <Button x:Name="PlayPauseButton" HorizontalAlignment="Center" Width="50" 
+                                FontSize="30" 
+                                Background="Transparent" BorderBrush="Gray"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Content=">" Click="PlayPauseButton_Click">
+
+                    </Button>
+                    <Button x:Name="ClearButton" HorizontalAlignment="Center" Width="50" 
+                                FontSize="30" 
+                                Background="Transparent" BorderBrush="Gray"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Content="x" Click="ClearButton_Click">
+                    </Button>
+                    <Button x:Name="AddTimeButton" HorizontalAlignment="Center" Width="50" 
+                                FontSize="30" 
+                                Background="Transparent" BorderBrush="Gray"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Top" Content="+" Click="AddTimeButton_Click">
+
+                    </Button>
+                </UniformGrid>
+                
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
