@@ -40,7 +40,17 @@ namespace TickTock
             this.StartTime = TimeSpan.FromMinutes(0);
             this.CurrentTime = TimeSpan.FromMinutes(0);
             InitializeComponent();
+            this.Loaded += MainWindow_Loaded;
         }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Buffer for scroll bar
+            const double positionBuffer = 50;
+            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+            this.Left = desktopWorkingArea.Right - this.Width - positionBuffer;
+            this.Top = desktopWorkingArea.Bottom - this.Height;
+    }
 
         private void TaskTextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
