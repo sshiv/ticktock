@@ -24,21 +24,23 @@ namespace TickTock
     {
         private int m_timerStepMin = 10; // 
 
-        public TimeSpan StartTime { get; set; }
+        public TimeSpan ElapsedTime { get; set; }
 
-        public TimeSpan CurrentTime { get; set; }
+        public TimeSpan EstimateTime { get; set; }
+        
+        
 
         public string CurrentTaskName { get; set; }
 
         public bool IsRunning { get; set; }
 
-        private DispatcherTimer m_countdownTimer = new DispatcherTimer();
+        private DispatcherTimer m_runningTimer = new DispatcherTimer();
         public MainWindow()
         {
             this.CurrentTaskName = "Task";
             this.IsRunning = false;
-            this.StartTime = TimeSpan.FromMinutes(0);
-            this.CurrentTime = TimeSpan.FromMinutes(0);
+            this.ElapsedTime = TimeSpan.FromMinutes(0);
+            this.EstimateTime = TimeSpan.FromMinutes(0);
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
         }
@@ -92,21 +94,25 @@ namespace TickTock
 
         void UpdateTimerDisplay()
         {
-            this.CountdownTextBox.Text = string.Format("{0:000}:{1:ss}", (int)CurrentTime.TotalMinutes, this.CurrentTime); //this.CurrentTime.ToString(@"%m\:ss");
+            this.EstimateTimeTextBox.Text = string.Format("{0:000}:{1:ss}", (int)EstimateTime.TotalMinutes, this.EstimateTime); 
+            this.TimerMinuteTextBox.Text = string.Format("{0:000}", (int)this.ElapsedTime.TotalMinutes);
+            this.TimerSecondsTextBox.Text = string.Format("{0:ss}", this.ElapsedTime);
+
         }
 
         void Pause()
         {
             this.IsRunning = false;
             this.PlayPauseButton.Content = ">";
-            m_countdownTimer.Stop();
+            m_runningTimer.Stop();
             UpdateTimerDisplay();
         }
 
         void Stop()
         {
             Pause();
-            this.CurrentTime = TimeSpan.FromSeconds(0);
+            this.EstimateTime = TimeSpan.FromSeconds(0);
+            this.ElapsedTime = TimeSpan.FromSeconds(0);
             UpdateTimerDisplay();
         }
 
@@ -118,7 +124,7 @@ namespace TickTock
             }
             else
             {
-                if (this.CurrentTime == TimeSpan.Zero)
+                if (this.EstimateTime == TimeSpan.Zero)
                 {
                     return;
                 }
@@ -127,18 +133,14 @@ namespace TickTock
                 this.PlayPauseButton.Content = "||";
                 UpdateTimerDisplay();
 
-                m_countdownTimer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+                m_runningTimer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
                 {
-                    this.CurrentTime = this.CurrentTime.Subtract(TimeSpan.FromSeconds(1));
+                    this.ElapsedTime = this.ElapsedTime.Add(TimeSpan.FromSeconds(1));
                     UpdateTimerDisplay();
 
-                    if (this.CurrentTime == TimeSpan.Zero)
-                    {
-                        Pause();
-                    }
                 }, Application.Current.Dispatcher);
 
-                m_countdownTimer.Start();
+                m_runningTimer.Start();
             }
         }
 
@@ -153,7 +155,7 @@ namespace TickTock
             {
                 Pause();
             }
-            this.CurrentTime = this.CurrentTime.Add(TimeSpan.FromMinutes(m_timerStepMin));
+            this.EstimateTime = this.EstimateTime.Add(TimeSpan.FromMinutes(m_timerStepMin));
             UpdateTimerDisplay();
         }
 
@@ -163,9 +165,9 @@ namespace TickTock
             {
                 Pause();
             }
-            if (this.CurrentTime == TimeSpan.Zero)
+            if (this.EstimateTime != TimeSpan.Zero)
             {
-                this.CurrentTime = this.CurrentTime.Subtract(TimeSpan.FromMinutes(m_timerStepMin));
+                this.EstimateTime = this.EstimateTime.Subtract(TimeSpan.FromMinutes(m_timerStepMin));
             }
             UpdateTimerDisplay();
         }
